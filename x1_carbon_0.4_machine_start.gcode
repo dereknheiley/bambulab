@@ -1,6 +1,7 @@
 
 ;===== date: 202200731 =====================
 ;===== reset machine status =================
+M117 reset machine status
 G91
 M17 Z0.3 ; lower the z-motor current
 G0 Z7 F300 ; lower the hotbed , to prevent the nozzle is below the hotbed
@@ -14,6 +15,7 @@ M73.2   R1.0 ;Reset left time magnitude
 M1002 set_gcode_claim_speed_level : 5
 
 ;===== heatbed preheat ====================
+M117 heatbed preheat
 M1002 gcode_claim_action : 2
 {if bbl_bed_temperature_gcode}
 M1002 set_heatbed_surface_temp:[bed_temperature_initial_layer_vector] ;config bed temps
@@ -26,11 +28,13 @@ M190 S[bed_temperature_initial_layer_single] ;wait for bed temp
 
 {if scan_first_layer}
 ;=========register first layer scan=====
+M117 register first layer scan
 M977 S1 P60
 {endif}
 
 ;=============turn on fans to prevent PLA jamming=================
 {if filament_type[initial_tool]=="PLA"}
+    M117 turn on fans to prevent PLA jamming
     {if (bed_temperature[current_extruder] >45)||(bed_temperature_initial_layer[current_extruder] >45)}
     M106 P3 S180
     {elsif (bed_temperature[current_extruder] >50)||(bed_temperature_initial_layer[current_extruder] >50)}
@@ -40,6 +44,7 @@ M977 S1 P60
 M106 P2 S100 ; turn on big fan ,to cool down toolhead
 
 ;===== prepare print temperature and material ==========
+M117 prepare print temperature and material
 M104 S[nozzle_temperature_initial_layer] ;set extruder temp
 G91
 G0 Z2 F1200
@@ -96,6 +101,7 @@ M975 S1
 
 
 ;===== wipe mouth ===============================
+M117 wipe mouth
 M1002 gcode_claim_action : 14
 M975 S1
 M106 S255
@@ -143,9 +149,11 @@ M106 S0 ; turn off fan , too noisy
 
 
 ;===== bed leveling ==================================
+M117 bed leveling
 M1002 judge_flag g29_before_print_flag
 M622 J1
 
+    M117 bed leveling running...
     M1002 gcode_claim_action : 1
     G29 A X{first_layer_print_min[0]} Y{first_layer_print_min[1]} I{first_layer_print_size[0]} J{first_layer_print_size[1]}
     M400
@@ -155,6 +163,7 @@ M623
 ;===== bed leveling end ================================
 
 ;===== home after wipe mouth============================
+M117 home after wipe mouth
 M1002 judge_flag g29_before_print_flag
 M622 J0
 
@@ -167,11 +176,13 @@ M623
 M975 S1 ; turn on vibration supression
 
 ;===== check scanner clarity ===========================
+M117 check scanner clarity
 M972 S5 P0  
 M400 S1
 ;===== check scanner clarity end =======================
 
 =============turn on fans to prevent PLA jamming=================
+M117 turn on fans to prevent PLA jamming
 {if filament_type[initial_tool]=="PLA"}
     {if (bed_temperature[current_extruder] >45)||(bed_temperature_initial_layer[current_extruder] >45)}
     M106 P3 S180
@@ -183,12 +194,14 @@ M106 P2 S100 ; turn on big fan ,to cool down toolhead
 
 {if scan_first_layer}
 ;start heatbed  scan====================================
+M117 scanning first layer
 M976 S2 P1 
 {endif}
 
 M104 S{nozzle_temperature_initial_layer[initial_extruder]} ; set extrude temp earlier, to reduce wait time
 
 ;===== mech mode fast check============================
+M117 mech mode fast check
 G1 X128 Y128 Z5 F20000
 M400 P200
 M970.3 Q1 A7 B30 C80  H15 K0
@@ -206,6 +219,7 @@ G28 X ; re-home XY
 
 
 ;===== noozle load line ===============================
+M117 noozle load line
 M975 S1
 G90 
 M83
@@ -219,11 +233,13 @@ G0 X18 E15
 M400
 
 ;===== draw extrinsic para cali paint =================
+M117 draw extrinsic para cali paint
 M1002 judge_flag extrude_cali_flag
 M622 J1
 
     M1002 gcode_claim_action : 8
 
+    M117 draw extrinsic para cali paint running...
     T1000 
     G0 F3000 X28.000 Y19.500 Z0.200
     G1 F1200.0 X28.000 Y45.000 Z0.200 E0.933 
@@ -382,6 +398,7 @@ M104 S140
 
 
 ;=========== laser and rgb calibration =========== 
+M117 laser and rgb calibration
 M400
 M18 E
 M500 R
@@ -400,9 +417,11 @@ M973 S6 ; use auto exposure by xcam
 M960 S0 P0
 
 ;=========== handeye calibration ======================
+M117 handeye calibration
 M1002 judge_flag extrude_cali_flag
 M622 J1
 
+    M117 handeye calibration running
     M973 S3 P1 ; camera start stream
     M400 P500
     M973 S1 
@@ -551,6 +570,7 @@ M622 J1
 M623
 
 ;========turn off light and wait extrude temperature =============
+M117 turn off light and wait extrude temperature
 M1002 gcode_claim_action : 0
 M973 S4 ; turn off scanner
 M400 ; wait all motion done before implement the emprical L parameters
@@ -575,3 +595,5 @@ G0 Y128 E6.4
 G0 X252.5
 G0 Y252.5 E6.4
 G0 X128 E6.4
+
+M117 printing model
