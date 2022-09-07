@@ -566,7 +566,9 @@ M975 S1 ; turn on mech mode supression
 G90 
 M83
 T1000
-G1 X128.0 Y253.0 Z0.2 F6000.0;Move to start position
+
+M117 print final purge line
+G1 X128.0 Y253.0 Z0.2 F12000 ;Move to start position
 M109 S{nozzle_temperature_initial_layer[initial_extruder]}
 G0 X253 E6.4 F{outer_wall_volumetric_speed/(0.3*0.6)    * 60} 
 G0 Y128 E6.4
