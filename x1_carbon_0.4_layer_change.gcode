@@ -1,3 +1,5 @@
+M117 layer:{layer_num+1} Z:[layer_z] ;output height for nerds
+
 {if timelapse_no_toolhead}
 ; G92 E0
 ; G1 E-[retraction_length] F1800
