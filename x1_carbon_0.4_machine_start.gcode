@@ -6,7 +6,7 @@ M17 Z0.3 ; lower the z-motor current
 G0 Z7 F300 ; lower the hotbed , to prevent the nozzle is below the hotbed
 G90
 M17 X1.2 Y1.2 Z0.75 ; reset motor current to default
-M960 S5 P1 ; turn on logo lamp
+;M960 S5 P1 ; turn on logo lamp
 G90
 M220 S100 ;Reset Feedrate
 M221 S100 ;Reset Flowrate
