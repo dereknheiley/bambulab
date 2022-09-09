@@ -1,5 +1,5 @@
 
-;===== date: 202200731 =====================
+;===== date: 202200815 =====================
 ;===== reset machine status =================
 M117 reset machine status
 G91
@@ -13,6 +13,7 @@ M220 S100 ;Reset Feedrate
 M221 S100 ;Reset Flowrate
 M73.2   R1.0 ;Reset left time magnitude
 M1002 set_gcode_claim_speed_level : 5
+M221 X0 Y0 Z0 ; turn off soft endstop to prevent protential logic problem
 
 ;===== heatbed preheat ====================
 M117 heatbed preheat
@@ -96,12 +97,11 @@ G1 X80 F15000
 G1 X165 F15000; wipe and shake
 M400
 M106 P1 S0
-M975 S1
 ;===== prepare print temperature and material end =====
 
 
-;===== wipe mouth ===============================
-M117 wipe mouth
+;===== wipe nozzle ===============================
+M117 wipe nozzle
 M1002 gcode_claim_action : 14
 M975 S1
 M106 S255
@@ -131,12 +131,55 @@ G0 X128 Y261 Z-1.5 F20000  ; move to exposed steel surface and stop the nozzle
 M104 S140 ; set temp down to heatbed acceptable
 M106 S255 ; turn on fan (G28 has turn off fan)
 
-G0 X126 F120
-G0 X130
-G0 X126
-G0 X130
+M221 S; push soft endstop status
+M221 Z0 ;turn off Z axis endstop
+G0 Z0.5 F20000
+G0 X125 Y259.5 Z-1.01
+G0 X131 F211
+G0 X124
+G0 Z0.5 F20000
+G0 X125 Y262.5
+G0 Z-1.01
+G0 X131 F211
+G0 X124
+G0 Z0.5 F20000
+G0 X125 Y260.0
+G0 Z-1.01
+G0 X131 F211
+G0 X124
+G0 Z0.5 F20000
+G0 X125 Y262.0
+G0 Z-1.01
+G0 X131 F211
+G0 X124
+G0 Z0.5 F20000
+G0 X125 Y260.5
+G0 Z-1.01
+G0 X131 F211
+G0 X124
+G0 Z0.5 F20000
+G0 X125 Y261.5
+G0 Z-1.01
+G0 X131 F211
+G0 X124
+G0 Z0.5 F20000
+G0 X125 Y261.0
+G0 Z-1.01
+G0 X131 F211
+G0 X124
 G0 X128
+G2 I0.5 J0 F300
+G2 I0.5 J0 F300
+G2 I0.5 J0 F300
+G2 I0.5 J0 F300
+
 M109 S140 ; wait nozzle temp down to heatbed acceptable
+G2 I0.5 J0 F3000
+G2 I0.5 J0 F3000
+G2 I0.5 J0 F3000
+G2 I0.5 J0 F3000
+
+M221 R; pop softend status
 G1 Z10 F1200
 M400
 G1 Z10
@@ -145,7 +188,7 @@ G1 X230 Y15
 G29.2 S1 ; turn on ABL
 ;G28 ; home again after hard wipe mouth
 M106 S0 ; turn off fan , too noisy
-;===== wipe mouth end ================================
+;===== wipe nozzle end ================================
 
 
 ;===== bed leveling ==================================
@@ -212,6 +255,7 @@ M400 P200
 M970.3 Q0 A7 B30 C90 Q0 H15 K0
 M974 Q0 S2 P0
 
+M975 S1
 G1 F30000
 G1 X230 Y15
 G28 X ; re-home XY 
